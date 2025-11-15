@@ -1,0 +1,105 @@
+/* CSS Variables for Checkbox */
+:root {
+  --checkbox-wrapper-size: 35px;
+  --checkbox-size: 23px;
+  --checkbox-position-left: 6px;
+  --checkbox-position-top: 6.5px;
+  --checkbox-border-radius: 6px;
+  --checkbox-border-width: 1.5px;
+  --checkbox-border-color: #CDCDCD;
+  --checkbox-bg-color: #FFFFFF;
+  --checkbox-opacity-unchecked: 0.6;
+  --checkbox-opacity-checked: 10;
+  --checkmark-width: 14px;
+  --checkmark-height: 9px;
+  --checkmark-position-left: 8px;
+  --checkmark-position-top: 7px;
+  --checkmark-color: #1F2128;
+}
+
+/* Checkbox Wrapper */
+.checkbox-wrapper {
+  margin-left: auto;
+  margin-right: 0;
+  width: var(--checkbox-wrapper-size);
+  height: var(--checkbox-wrapper-size);
+  position: relative;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+}
+
+/* Hidden Native Checkbox Input */
+.custom-checkbox {
+  position: absolute;
+  left: var(--checkbox-position-left);
+  top: var(--checkbox-position-top);
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
+  margin: 0;
+  cursor: pointer;
+  opacity: 0;
+  z-index: 2;
+}
+
+/* Custom Checkbox Visual Label */
+.checkbox-label {
+  position: absolute;
+  left: var(--checkbox-position-left);
+  top: var(--checkbox-position-top);
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
+  box-sizing: border-box;
+  border: var(--checkbox-border-width) solid var(--checkbox-border-color);
+  border-radius: var(--checkbox-border-radius);
+  background: var(--checkbox-bg-color);
+  opacity: var(--checkbox-opacity-unchecked);
+  cursor: pointer;
+  z-index: 1;
+  transition: opacity 0.2s ease;
+  overflow: hidden;
+}
+
+/* Checked State */
+.custom-checkbox:checked + .checkbox-label {
+  opacity: var(--checkbox-opacity-checked);
+  background: var(--dynamic-checkbox-color, var(--checkbox-bg-color));
+  border: var(--checkbox-border-width, 1px) solid var(--checkbox-border-color, var(--checkbox-border-color));
+  transition: border-color 0.3s ease, border-width 0.3s ease, background-color 0.3s ease;
+}
+
+/* Inner Background Square (when checked) */
+.custom-checkbox:checked + .checkbox-label::after {
+  content: '';
+  display: var(--hide-inner-square, block);
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 10%;
+  bottom: 10%;
+  width: 18px;
+  height: 18px;
+  background: var(--dynamic-checkbox-color, var(--checkbox-bg-color));
+  border-radius: 4px;
+  z-index: 1;
+  transition: background-color 0.3s ease, opacity 0.2s ease;
+}
+
+/* Checkmark Icon */
+.custom-checkbox:checked + .checkbox-label::before {
+  content: '';
+  position: absolute;
+  left: var(--checkmark-left, var(--checkmark-position-left));
+  top: var(--checkmark-top, var(--checkmark-position-top));
+  width: var(--checkmark-width);
+  height: var(--checkmark-height);
+  border-left: var(--checkmark-border-width, 1px) solid var(--checkmark-border-color, var(--checkmark-color));
+  border-bottom: var(--checkmark-border-width, 1px) solid var(--checkmark-border-color, var(--checkmark-color));
+  transform: rotate(-45deg);
+  transform-origin: 0 100%;
+  opacity: 1;
+  z-index: 2;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: border-color 0.3s ease, border-width 0.3s ease, background-color 0.3s ease, left 0.3s ease, top 0.3s ease;
+}

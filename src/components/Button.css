@@ -1,0 +1,58 @@
+/* Button Base Styles */
+.button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  gap: 10px;
+  height: 40px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 130%;
+  color: #1F2128;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  transition: background-color 0.2s ease;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Primary Button Variant */
+.button-primary {
+  width: 340px;
+  background: #FFCE22;
+}
+
+.button-primary:hover:not(:disabled) {
+  background: #FFD84D;
+}
+
+.button-primary:active:not(:disabled) {
+  background: #E6B91F;
+}
+
+/* Secondary Button Variant (for future use) */
+.button-secondary {
+  background: #EEEEEE;
+  color: #1F2128;
+}
+
+.button-secondary:hover:not(:disabled) {
+  background: #E0E0E0;
+}
+
+.button-secondary:active:not(:disabled) {
+  background: #D0D0D0;
+}
+
+
