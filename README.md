@@ -63,5 +63,3 @@ firstAssignment/
 - React 18
 - Vite (build tool)
 - CSS3
-
-
