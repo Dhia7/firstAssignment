@@ -4,8 +4,8 @@
   --checkbox-size: 23px;
   --checkbox-position-left: 6px;
   --checkbox-position-top: 6.5px;
-  --checkbox-border-radius: 6px;
-  --checkbox-border-width: 1.5px;
+  --checkbox-border-radius: 8px;
+  --checkbox-border-width: 1px;
   --checkbox-border-color: #CDCDCD;
   --checkbox-bg-color: #FFFFFF;
   --checkbox-opacity-unchecked: 0.6;
@@ -80,7 +80,7 @@
   width: 18px;
   height: 18px;
   background: var(--dynamic-checkbox-color, var(--checkbox-bg-color));
-  border-radius: 4px;
+  border-radius: 6px;
   z-index: 1;
   transition: background-color 0.3s ease, opacity 0.2s ease;
 }

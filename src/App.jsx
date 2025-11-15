@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import TableHeader from './components/TableHeader'
 import Divider from './components/Divider'
 import PageItem from './components/PageItem'
@@ -10,6 +10,8 @@ const App = () => {
   const pages = [
     { id: 1, name: 'Page 1' },
     { id: 2, name: 'Page 2' },
+    { id: 3, name: 'Page 3' },
+    { id: 4, name: 'Page 4' },
   ]
 
   const {
@@ -20,48 +22,58 @@ const App = () => {
     handlePageSelect,
   } = usePageSelection(pages)
 
-  // Each page has its own independent clickCount - completely separate
-  const [page1ClickCount, setPage1ClickCount] = useState(0)
-  const [page2ClickCount, setPage2ClickCount] = useState(0)
+  // Dynamic clickCount state for all pages - uses page ID as key
+  const [pageClickCounts, setPageClickCounts] = useState(() => {
+    const initialCounts = {}
+    pages.forEach(page => {
+      initialCounts[page.id] = 0
+    })
+    return initialCounts
+  })
   
   // "All pages" has its own independent clickCount
   const [allPagesClickCount, setAllPagesClickCount] = useState(0)
   
-  // Handlers for updating each page's clickCount independently
-  const handlePage1ClickCount = (newCountOrFunction) => {
-    if (typeof newCountOrFunction === 'function') {
-      setPage1ClickCount(newCountOrFunction)
-    } else {
-      setPage1ClickCount(newCountOrFunction)
-    }
+  // Handler for updating any page's clickCount independently
+  const handlePageClickCount = (pageId) => (newCountOrFunction) => {
+    setPageClickCounts(prev => {
+      const currentCount = prev[pageId] || 0
+      const newCount = typeof newCountOrFunction === 'function' 
+        ? newCountOrFunction(currentCount) 
+        : newCountOrFunction
+      return {
+        ...prev,
+        [pageId]: newCount
+      }
+    })
   }
   
-  const handlePage2ClickCount = (newCountOrFunction) => {
-    if (typeof newCountOrFunction === 'function') {
-      setPage2ClickCount(newCountOrFunction)
-    } else {
-      setPage2ClickCount(newCountOrFunction)
-    }
-  }
+  // Check if all pages have the same clickCount
+  const allPagesHaveSameClickCount = useMemo(() => {
+    const counts = Object.values(pageClickCounts)
+    if (counts.length === 0) return true
+    const firstCount = counts[0]
+    return counts.every(count => count === firstCount)
+  }, [pageClickCounts])
   
-  // "All pages" has priority: if Page 1 and Page 2 don't match, reset "All pages" to 0 (empty checkbox)
+  // "All pages" has priority: if pages don't match, reset "All pages" to 0 (empty checkbox)
   useEffect(() => {
-    if (page1ClickCount !== page2ClickCount) {
+    if (!allPagesHaveSameClickCount) {
       setAllPagesClickCount(0)
     }
-  }, [page1ClickCount, page2ClickCount])
+  }, [allPagesHaveSameClickCount])
   
-  // "All pages" display clickCount: follows Page 1 and Page 2 when they match, otherwise shows 0 (empty checkbox)
-  const allPagesDisplayClickCount = (page1ClickCount === page2ClickCount) 
-    ? page1ClickCount 
+  // "All pages" display clickCount: follows pages when they match, otherwise shows 0 (empty checkbox)
+  const allPagesDisplayClickCount = allPagesHaveSameClickCount 
+    ? (Object.values(pageClickCounts)[0] || 0)
     : 0
   
-  // When Page 1 and Page 2 don't match, "All pages" checkbox should be unchecked (empty)
-  const allPagesChecked = (page1ClickCount === page2ClickCount) && allPagesSelected
+  // When pages don't match, "All pages" checkbox should be unchecked (empty)
+  const allPagesChecked = allPagesHaveSameClickCount && allPagesSelected
   
-  // "All pages" setClickCount handler - has priority: when clicked, Page 1 and Page 2 follow
+  // "All pages" setClickCount handler - has priority: when clicked, all pages follow
   const handleAllPagesClickCount = (newCountOrFunction) => {
-    // Use the current displayed clickCount as starting point (could be from Page 1/Page 2 if they match)
+    // Use the current displayed clickCount as starting point (could be from pages if they match)
     const currentDisplayCount = allPagesDisplayClickCount
     
     const newAllPagesCount = typeof newCountOrFunction === 'function' 
@@ -71,9 +83,12 @@ const App = () => {
     // Update "All pages" own state
     setAllPagesClickCount(newAllPagesCount)
     
-    // "All pages" has priority: update both Page 1 and Page 2 to follow "All pages" clickCount
-    setPage1ClickCount(newAllPagesCount)
-    setPage2ClickCount(newAllPagesCount)
+    // "All pages" has priority: update all pages to follow "All pages" clickCount
+    const updatedCounts = {}
+    pages.forEach(page => {
+      updatedCounts[page.id] = newAllPagesCount
+    })
+    setPageClickCounts(updatedCounts)
   }
 
   // Wrapper to handle checkbox staying checked during style progression
@@ -106,8 +121,8 @@ const App = () => {
             page={page}
             isSelected={selectedPages.has(page.id)}
             onSelect={handlePageSelect}
-            clickCount={page.id === 1 ? page1ClickCount : page.id === 2 ? page2ClickCount : undefined}
-            setClickCount={page.id === 1 ? handlePage1ClickCount : page.id === 2 ? handlePage2ClickCount : undefined}
+            clickCount={pageClickCounts[page.id] || 0}
+            setClickCount={handlePageClickCount(page.id)}
           />
         ))}
         <Divider />

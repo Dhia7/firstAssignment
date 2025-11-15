@@ -57,11 +57,10 @@ const Checkbox = ({
       '--checkmark-border-color': '#878787',
       '--checkmark-bg-color': '#FFFFFF',
       '--checkmark-left': '8px',
-      '--checkmark-top': '7px'
+      '--checkmark-top': '7px',
     },
     3: {
       '--dynamic-checkbox-color': '#5087F8',
-      '--checkbox-border-width': '1px',
       '--checkbox-border-color': '#5087F8',
       '--checkmark-border-color': '#FFFFFF',
       '--checkmark-border-width': '1px',
@@ -71,7 +70,6 @@ const Checkbox = ({
     },
     4: {
       '--dynamic-checkbox-color': '#2469F6',
-      '--checkbox-border-width': '1px',
       '--checkbox-border-color': '#2469F6',
       '--checkmark-border-color': '#FFFFFF',
       '--checkmark-border-width': '1px',
@@ -139,7 +137,8 @@ const Checkbox = ({
 
   // Calculate checkmark position offset based on border width
   const calculateCheckmarkOffset = (borderWidth) => {
-    const defaultBorderWidth = 1
+    // Use 1.5px as default to match CSS default border width
+    const defaultBorderWidth = 1.5
     const currentBorderWidth = parseFloat(borderWidth) || defaultBorderWidth
     const offset = (currentBorderWidth - defaultBorderWidth) / 2
     return offset
@@ -156,20 +155,13 @@ const Checkbox = ({
     
     const styles = clickStateStyles[targetCount] || {}
     
-    // Set checkmark position
+    // Set checkmark position - use the same fixed position for all clickCount states
     const defaultLeft = 8
     const defaultTop = 7
-    const defaultBorderWidth = 1
     
-    const borderWidth = styles['--checkbox-border-width'] || `${defaultBorderWidth}px`
-    const offset = calculateCheckmarkOffset(borderWidth)
-    
-    if (!styles['--checkmark-left']) {
-      styles['--checkmark-left'] = `${defaultLeft - offset}px`
-    }
-    if (!styles['--checkmark-top']) {
-      styles['--checkmark-top'] = `${defaultTop - offset}px`
-    }
+    // Always use the same fixed position for all states to ensure consistency
+    styles['--checkmark-left'] = `${defaultLeft}px`
+    styles['--checkmark-top'] = `${defaultTop}px`
     
     return styles
   }
